@@ -32,8 +32,19 @@ class ChessCNN(nnx.Module):
                 )
             )
 
+        # TODO: declare the policy head (move scores) and value head (eval, tanh)
+
         self.convs = nnx.List(convs)
+
+    def __call__(self, x):
+        for conv in self.convs:
+            x = nnx.relu(conv(x))
+        # TODO: Apply both heads and return (policy, value)
+        return x
 
 
 if __name__ == "__main__":
+    config = get_config()
+    model = ChessCNN(config.model, config.data.in_planes, rngs=nnx.Rngs(0))
+    #TODO: model(board) | board after being encoded 
     pass
