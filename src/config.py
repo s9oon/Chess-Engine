@@ -3,7 +3,11 @@ import copy
 from ml_collections import config_dict
 
 CONFIG = config_dict.ConfigDict({
+    "training": {
+        #TODO
+    },
     "data": {
+        # TODO: dataset path, eval scaling (cp/400)
         "in_planes": 18,  # input maps: 8x8 planes per board from the encoding
     },
     "model": {
