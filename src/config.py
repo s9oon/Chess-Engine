@@ -7,7 +7,6 @@ CONFIG = config_dict.ConfigDict({
         #TODO
     },
     "data": {
-        # TODO: dataset path, eval scaling (cp/400)
         "in_planes": 18,  # input maps: 8x8 planes per board from encoding/board.py
         "num_moves": 4672,  # action space size: 8x8 from-squares x 73 move types (see encoding/policy.py)
     },
