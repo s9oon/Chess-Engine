@@ -1,14 +1,12 @@
 import time
 from collections import deque
 from itertools import count
-from pathlib import Path
 
 import chess
-import jax
 import numpy as np
-import orbax.checkpoint as ocp
 from flax import nnx
 
+from checkpoint import make_manager, restore_checkpoint, save_checkpoint
 from config import get_config
 from encoding.board import encode_board
 from model import ChessCNN
@@ -18,8 +16,6 @@ from selfplay.train import make_optimizer, train_step
 
 #Self-play loop: play games -> replay buffer -> train on random batches -> checkpoint -> repeat
 #Run from src/: uv run python -m selfplay.selfplay   (resumes from the latest checkpoint if there is one)
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 #One game against itself, returns its positions as (board planes, policy target, value target)
@@ -51,38 +47,12 @@ def sample_batch(buffer: deque, batch_size: int, rng: np.random.Generator):
     return np.stack(planes), np.stack(policies), np.array(values, dtype=np.float32)
 
 
-#Checkpoints hold the model weights and AdamW's state, saved under the iteration number
-def save_checkpoint(manager, iteration: int, model, optimizer):
-    state = {"model": nnx.to_pure_dict(nnx.state(model)), "optimizer": nnx.to_pure_dict(nnx.state(optimizer))}
-    manager.save(iteration, args=ocp.args.StandardSave(state))
-    manager.wait_until_finished()
-
-
-#Loads the latest checkpoint into model + optimizer, returns the iteration to continue from
-def restore_checkpoint(manager, model, optimizer) -> int:
-    latest = manager.latest_step()
-    if latest is None:
-        return 0
-    model_state, optimizer_state = nnx.state(model), nnx.state(optimizer)
-    target = {"model": nnx.to_pure_dict(model_state), "optimizer": nnx.to_pure_dict(optimizer_state)}
-    abstract = jax.tree.map(ocp.utils.to_shape_dtype_struct, target)  # shapes only, tells orbax what to load
-    restored = manager.restore(latest, args=ocp.args.StandardRestore(abstract))
-    nnx.replace_by_pure_dict(model_state, restored["model"])
-    nnx.replace_by_pure_dict(optimizer_state, restored["optimizer"])
-    nnx.update(model, model_state)
-    nnx.update(optimizer, optimizer_state)
-    print(f"resumed from iteration {latest}")
-    return latest + 1
-
-
 def main(config):
     rng = np.random.default_rng()
     model = ChessCNN(config.model, config.data.in_planes, config.data.num_moves, rngs=nnx.Rngs(0))
     optimizer = make_optimizer(model, config.training)
 
-    manager = ocp.CheckpointManager(
-        PROJECT_ROOT / config.training.checkpoint_dir, options=ocp.CheckpointManagerOptions(max_to_keep=3)
-    )
+    manager = make_manager(config.training)
     start = restore_checkpoint(manager, model, optimizer)
     buffer = deque(maxlen=config.training.buffer_size)  # not checkpointed, refills after a restart
 
