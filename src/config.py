@@ -4,7 +4,10 @@ from ml_collections import config_dict
 
 CONFIG = config_dict.ConfigDict({
     "training": {
-        #TODO
+        "learning_rate": 1e-3,  # size of each AdamW nudge
+        "weight_decay": 1e-4,  # the W in AdamW: gently shrinks weights so they don't grow huge
+        "batch_size": 256,  # positions per train step
+        "value_weight": 1.0,  # how much the value loss counts vs the policy loss
     },
     "data": {
         "in_planes": 18,  # input maps: 8x8 planes per board from encoding/board.py
