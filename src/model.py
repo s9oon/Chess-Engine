@@ -1,6 +1,7 @@
 import jax
 import jax.numpy as jnp
 from flax import nnx
+from jax2onnx import to_onnx
 
 from config import get_config
 
