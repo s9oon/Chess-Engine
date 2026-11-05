@@ -8,6 +8,12 @@ CONFIG = config_dict.ConfigDict({
         "weight_decay": 1e-4,  # the W in AdamW: gently shrinks weights so they don't grow huge
         "batch_size": 256,  # positions per train step
         "value_weight": 1.0,  # how much the value loss counts vs the policy loss
+        "games_per_iteration": 10,  # self-play games before each round of training
+        "steps_per_iteration": 100,  # train steps after each round of games
+        "buffer_size": 100_000,  # replay buffer keeps the most recent positions, oldest drop off
+        "max_plies": 400,  # game cut off as a draw after this many half-moves
+        "checkpoint_dir": "checkpoints",  # relative to the project root
+        "checkpoint_every": 1,  # iterations between saves
     },
     "mcts": {
         "num_simulations": 200,  # searches per move (AlphaZero used 800)
