@@ -1,2 +1,6 @@
-# Python's compiled-code cache (rebuilt automatically)
 __pycache__/
+*.pyc
+.venv/
+checkpoints/
+*.onnx
+*.onnx.data

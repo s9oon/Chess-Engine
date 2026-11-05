@@ -1,5 +1,0 @@
-# JAX with bundled CUDA 13 (pulls the nvidia-* wheels; no system CUDA needed)
-jax[cuda13]==0.12.0
-
-# python-chess: board, legal moves, PGN/FEN
-chess==1.11.2
