@@ -1,12 +1,8 @@
 import jax
 import jax.numpy as jnp
-import onnx
 from flax import nnx
-from jax2onnx import to_onnx
 
-from checkpoint import PROJECT_ROOT, make_manager, restore_checkpoint
 from config import get_config
-from selfplay.train import make_optimizer
 
 
 class ChessCNN(nnx.Module):
@@ -114,17 +110,12 @@ class ChessCNN(nnx.Module):
         return policy, value
 
 
-#Writes the model with its current weights to one .onnx file (weights included, no .data sidecar)
-#Input "board": float32 (batch, 8, 8, in_planes), "B" = any batch size; outputs "policy" and "value"
-def export_onnx(model, path, in_planes: int):
-    proto = to_onnx(model, [("B", 8, 8, in_planes)], input_names=["board"], output_names=["policy", "value"])
-    onnx.save_model(proto, str(path), save_as_external_data=False)  # jax2onnx would split weights >1MB into .data
-    return path
-
-
 if __name__ == "__main__":
-    #Exports the latest checkpoint to chess.onnx in the project root (random weights if none saved yet)
     config = get_config()
     model = ChessCNN(config.model, config.data.in_planes, config.data.num_moves, rngs=nnx.Rngs(0))
-    restore_checkpoint(make_manager(config.training), model, make_optimizer(model, config.training))  # optimizer needed to load, then unused
-    print("saved", export_onnx(model, PROJECT_ROOT / "chess.onnx", config.data.in_planes))
+    #TODO: model(board) | board after being encoded
+    #For now a blank board of the right shape checks the wiring: (batch, 8, 8, in_planes)
+    board = jnp.zeros((1, 8, 8, config.data.in_planes))
+    policy, value = model(board)
+    print("policy:", policy.shape)  # expect (1, num_moves)
+    print("value:", value.shape)  # expect (1, 1)
