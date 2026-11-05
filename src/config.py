@@ -9,6 +9,13 @@ CONFIG = config_dict.ConfigDict({
         "batch_size": 256,  # positions per train step
         "value_weight": 1.0,  # how much the value loss counts vs the policy loss
     },
+    "mcts": {
+        "num_simulations": 200,  # searches per move (AlphaZero used 800)
+        "c_puct": 1.5,  # how much the search explores moves it hasn't checked much
+        "dirichlet_alpha": 0.3,  # root noise spikiness, lets self-play try moves the network ignores
+        "dirichlet_epsilon": 0.25,  # share of root priors replaced by noise
+        "temperature_moves": 30,  # moves picked randomly by visit share before switching to the best move
+    },
     "data": {
         "in_planes": 18,  # input maps: 8x8 planes per board from encoding/board.py
         "num_moves": 4672,  # action space size: 8x8 from-squares x 73 move types (see encoding/policy.py)
