@@ -11,7 +11,7 @@ from selfplay.train import make_optimizer
 
 
 #Move server: POST /move with a FEN, the bot searches with MCTS and answers with its move
-#Run from src/: uv run fastapi run server.py   (loads the latest checkpoint at startup)
+#Run from engine/training/: uv run fastapi run server.py   (loads the latest checkpoint at startup)
 
 config = get_config()
 model = ChessCNN(config.model, config.data.in_planes, config.data.num_moves, rngs=nnx.Rngs(0))

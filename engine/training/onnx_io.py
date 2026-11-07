@@ -13,8 +13,8 @@ from selfplay.train import make_optimizer
 
 
 #ONNX both ways: export the latest checkpoint, or import an .onnx file as a new checkpoint to keep training
-#Run from src/: uv run python onnx_io.py export
-#               uv run python onnx_io.py import path/to/file.onnx
+#Run from engine/training/: uv run python onnx_io.py export
+#                           uv run python onnx_io.py import path/to/file.onnx
 
 
 #Writes the model with its current weights to one .onnx file (weights included, no .data sidecar)

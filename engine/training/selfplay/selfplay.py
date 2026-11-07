@@ -15,7 +15,7 @@ from selfplay.train import make_optimizer, train_step
 
 
 #Self-play loop: play games -> replay buffer -> train on random batches -> checkpoint -> repeat
-#Run from src/: uv run python -m selfplay.selfplay   (resumes from the latest checkpoint if there is one)
+#Run from engine/training/: uv run python -m selfplay.selfplay   (resumes from the latest checkpoint if there is one)
 
 
 #One game against itself, returns its positions as (board planes, policy target, value target)

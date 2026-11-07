@@ -10,7 +10,7 @@ from selfplay.train import make_optimizer
 
 #Handoff: latest checkpoints/supervised_<k> -> the next self-play checkpoint, so make train continues from it
 #Older self-play checkpoints stay as backups until self-play's own saves push them out (last 3 kept)
-#Run from src/: uv run python -m supervised.handoff
+#Run from engine/training/: uv run python -m supervised.handoff
 
 def handoff(config):
     model = ChessCNN(config.model, config.data.in_planes, config.data.num_moves, rngs=nnx.Rngs(0))

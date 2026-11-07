@@ -2,11 +2,20 @@
 
 AlphaZero-style chess bot written in JAX/Flax. It learns by playing against itself. There is an optional jump start: pretrain on Stockfish evaluations from Lichess first, so self-play doesn't begin from random weights.
 
+## Repo layout
+
+| folder | what it is |
+|---|---|
+| `engine/` | Python project: the model, training (self-play + optional pretraining), ONNX export |
+| `backend/` | ASP.NET inference API, planned (empty for now) |
+| `web/` | frontend, planned (empty for now) |
+
 ## Setup
 
-Needs Python 3.12 and [uv](https://docs.astral.sh/uv/).
+Needs Python 3.12 and [uv](https://docs.astral.sh/uv/). Everything below runs from `engine/`.
 
 ```bash
+cd engine
 uv sync
 ```
 
@@ -21,7 +30,7 @@ uv sync
 | `make pretrain EVALS=file.jsonl.zst` | optional: supervised pretraining on Lichess evals, resumes if run again |
 | `make handoff` | latest pretraining checkpoint -> next self-play checkpoint, `make train` continues from it |
 
-Checkpoints are saved to `checkpoints/`: self-play as `28`, `29`, ... and pretraining as `supervised_0`, `supervised_1`, .... Each keeps its own last 3. Back this folder up, because it is the trained bot.
+Checkpoints are saved to `engine/checkpoints/`: self-play as `28`, `29`, ... and pretraining as `supervised_0`, `supervised_1`, .... Each keeps its own last 3. Back this folder up, because it is the trained bot.
 
 ## Move API
 
@@ -54,30 +63,33 @@ Self-play from random weights is slow to get going, so the network can first lea
 
 The settings are in the `supervised` section of `config.py`.
 
-## Layout
+## Engine layout
 
 ```
-src/
-  config.py          all settings (model, MCTS, training, pretraining)
-  model.py           CNN with policy (4672 moves) and value heads
-  encoding/
-    board.py         board -> (8, 8, 18) planes
-    policy.py        move <-> policy index (from_square * 73 + move_type)
-  selfplay/
-    mcts.py          tree search
-    loss.py          policy cross-entropy + value MSE
-    train.py         AdamW train step (also used by pretraining)
-    selfplay.py      game loop, replay buffer, checkpoints
-  supervised/        optional pretraining on Lichess Stockfish evals
-    data/
-      decompress.py  read the .zst file a chunk of lines at a time
-      encode.py      JSON line -> board planes, move index, value (on worker processes)
-    loss.py          policy cross-entropy on the move index + value MSE
-    train.py         read -> encode -> train loop, validation, checkpoints
-    handoff.py       latest pretraining checkpoint -> next self-play checkpoint
-  checkpoint.py      save / resume with orbax
-  server.py          FastAPI move server
-  onnx_io.py         ONNX export / import
+engine/
+  Makefile, pyproject.toml, uv.lock
+  checkpoints/         saved models (not in git)
+  training/
+    config.py          all settings (model, MCTS, training, pretraining)
+    model.py           CNN with policy (4672 moves) and value heads
+    encoding/
+      board.py         board -> (8, 8, 18) planes
+      policy.py        move <-> policy index (from_square * 73 + move_type)
+    selfplay/
+      mcts.py          tree search
+      loss.py          policy cross-entropy + value MSE
+      train.py         AdamW train step (also used by pretraining)
+      selfplay.py      game loop, replay buffer, checkpoints
+    supervised/        optional pretraining on Lichess Stockfish evals
+      data/
+        decompress.py  read the .zst file a chunk of lines at a time
+        encode.py      JSON line -> board planes, move index, value (on worker processes)
+      loss.py          policy cross-entropy on the move index + value MSE
+      train.py         read -> encode -> train loop, validation, checkpoints
+      handoff.py       latest pretraining checkpoint -> next self-play checkpoint
+    checkpoint.py      save / resume with orbax
+    server.py          FastAPI move server
+    onnx_io.py         ONNX export / import
 ```
 
 ## Status

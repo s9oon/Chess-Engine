@@ -17,7 +17,7 @@ from supervised.loss import loss_fn
 
 
 #Supervised jump start: learn Stockfish's moves + evals from the Lichess evals file, before self-play
-#Run from src/: uv run python -m supervised.train path/to/lichess_db_eval.jsonl.zst
+#Run from engine/training/: uv run python -m supervised.train path/to/lichess_db_eval.jsonl.zst
 #
 #Loop: read X lines -> encode on the workers -> shuffle -> train in batches -> drop -> repeat until N
 #Checkpoints go to checkpoints/supervised_<k> (k = validation checks done), apart from self-play's;
