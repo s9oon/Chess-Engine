@@ -9,4 +9,5 @@ dependencies = [
     "jax2onnx>=0.18.0",
     "jax[cuda13]==0.12.0",
     "ml-collections==1.1.0",
+    "zstandard>=0.25.0",
 ]

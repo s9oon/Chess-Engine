@@ -9,18 +9,26 @@ CONFIG = config_dict.ConfigDict({
         "batch_size": 256,  # positions per train step
         "value_weight": 1.0,  # how much the value loss counts vs the policy loss
         "games_per_iteration": 10,  # self-play games before each round of training
-        "steps_per_iteration": 100,  # train steps after each round of games
-        "buffer_size": 100_000,  # replay buffer keeps the most recent positions, oldest drop off
-        "max_plies": 400,  # game cut off as a draw after this many half-moves
+        "steps_per_iteration": 20,  # train steps after each round of games
+        "buffer_size": 50_000,  # replay buffer keeps the most recent positions, oldest drop off
+        "max_plies": 200,  # game cut off as a draw after this many half-moves
         "checkpoint_dir": "checkpoints",  # relative to the project root
         "checkpoint_every": 1,  # iterations between saves
     },
     "mcts": {
-        "num_simulations": 200,  # searches per move (AlphaZero used 800)
+        "num_simulations": 50,  # searches per move (AlphaZero used 800)
         "c_puct": 1.5,  # how much the search explores moves it hasn't checked much
         "dirichlet_alpha": 0.3,  # root noise spikiness, lets self-play try moves the network ignores
         "dirichlet_epsilon": 0.25,  # share of root priors replaced by noise
         "temperature_moves": 30,  # moves picked randomly by visit share before switching to the best move
+    },
+    "supervised": {
+        "num_workers": 8,  # processes encoding positions in parallel
+        "chunk_positions": 200_000,  # X: positions read, encoded and trained on per round, ~1.15KB each so ~230MB
+        "max_positions": 50_000_000,  # N: stop after training on this many positions, 0 = the whole file
+        "val_positions": 50_000,  # first positions of the file, set aside to measure progress, never trained on
+        "eval_every": 5_000_000,  # validation check + checkpoint every this many positions, keep it a multiple of chunk_positions
+        "cp_scale": 400,  # value = tanh(centipawns / cp_scale), so +4 pawns ~ 0.76
     },
     "data": {
         "in_planes": 18,  # input maps: 8x8 planes per board from encoding/board.py

@@ -11,9 +11,12 @@ from flax import nnx
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
-def make_manager(config) -> ocp.CheckpointManager:
+#prefix: None saves as checkpoints/28 (self-play), "supervised" saves as checkpoints/supervised_28
+#Each prefix only sees and cleans up its own checkpoints, so the two never delete each other's
+def make_manager(config, prefix: str | None = None) -> ocp.CheckpointManager:
     return ocp.CheckpointManager(
-        PROJECT_ROOT / config.checkpoint_dir, options=ocp.CheckpointManagerOptions(max_to_keep=3)
+        PROJECT_ROOT / config.checkpoint_dir,
+        options=ocp.CheckpointManagerOptions(max_to_keep=3, step_prefix=prefix),
     )
 
 
