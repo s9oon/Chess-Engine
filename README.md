@@ -7,8 +7,8 @@ AlphaZero-style chess bot written in JAX/Flax. It learns by playing against itse
 | folder | what it is |
 |---|---|
 | `engine/` | Python project: the model, training (self-play + optional pretraining), ONNX export |
-| `backend/` | ASP.NET inference API, planned (empty for now) |
-| `web/` | frontend, planned (empty for now) |
+| `web/backend/` | ASP.NET inference API: loads `chess.onnx`, serves moves (in progress) |
+| `web/frontend/` | frontend, planned (empty for now) |
 
 ## Setup
 
