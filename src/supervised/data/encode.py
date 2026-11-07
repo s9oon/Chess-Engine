@@ -10,7 +10,7 @@ from encoding.policy import move_to_index
 
 
 #Lichess eval lines -> training arrays, split across worker processes
-#Must not import jax: the workers are spawned and import this file, they only need chess + numpy
+#Only needs chess + numpy, so the workers stay light (see the pool in supervised/train.py)
 #
 #One line looks like:
 #{"fen": "...", "evals": [{"depth": 36, "pvs": [{"cp": 311, "line": "g2e4 f7f5 ..."}, ...]}, ...]}

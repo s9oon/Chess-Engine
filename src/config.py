@@ -24,7 +24,10 @@ CONFIG = config_dict.ConfigDict({
     },
     "supervised": {
         "num_workers": 8,  # processes encoding positions in parallel
-        "chunk_positions": 200_000,  # positions shuffled together per training chunk, ~1.15KB each so ~230MB
+        "chunk_positions": 200_000,  # X: positions read, encoded and trained on per round, ~1.15KB each so ~230MB
+        "max_positions": 50_000_000,  # N: stop after training on this many positions, 0 = the whole file
+        "val_positions": 50_000,  # first positions of the file, set aside to measure progress, never trained on
+        "eval_every": 5_000_000,  # validation check + checkpoint every this many positions, keep it a multiple of chunk_positions
         "cp_scale": 400,  # value = tanh(centipawns / cp_scale), so +4 pawns ~ 0.76
     },
     "data": {
