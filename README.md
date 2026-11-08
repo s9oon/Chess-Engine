@@ -82,10 +82,7 @@ src/
 
 ## Status
 
-The pipeline runs end to end, but the bot has not been trained long enough to know how strong it gets. Next steps:
-
-- strength check against a random mover and against older checkpoints
-- batch self-play across many games, because one game at a time is slow
+Not complete.
 
 ## License
 
