@@ -1,6 +1,6 @@
 # Chess Bot v2
 
-THIS IS A DEPRECATED. I am ditching this repo, as ill be doing a rewrite and other reasons. The Project itself isnt ditched!.
+THIS IS DEPRECATED. I am ditching this repo, as ill be doing a rewrite and other reasons. The Project itself isnt ditched!.
 
 AlphaZero-style chess bot written in JAX/Flax. It learns by playing against itself. There is an optional jump start: pretrain on Stockfish evaluations from Lichess first, so self-play doesn't begin from random weights.
 
